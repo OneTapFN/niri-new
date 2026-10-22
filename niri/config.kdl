@@ -1,0 +1,353 @@
+// niri config — Breeze Dark + hotkeys in the style of sway
+// Docs: https://niri-wm.github.io/niri/Configuration:-Introduction
+// This file live-reloads on save.
+
+input {
+    keyboard {
+        xkb {
+            // Sourced from /etc/default/keyboard (us,ru; Caps Lock switches layout).
+            layout "us,ru"
+            options "grp:caps_toggle,grp_led:scroll"
+        }
+
+        numlock
+    }
+
+    touchpad {
+        tap
+        dwt
+        natural-scroll
+    }
+
+    mouse {
+        // natural-scroll
+    }
+
+    // Focus windows and outputs when the mouse enters them, but only if the
+    // window is already fully on screen (prevents surprise scrolling).
+    focus-follows-mouse max-scroll-amount="0%"
+}
+
+layout {
+    gaps 8
+
+    center-focused-column "never"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    preset-window-heights {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    default-column-width { proportion 0.5; }
+
+    // Breeze Dark focus ring: the KDE accent blue.
+    focus-ring {
+        width 2
+        active-color "#3daee9"
+        inactive-color "#4b4e52"
+    }
+
+    // Inactive windows get a subtle Breeze border.
+    border {
+        width 1
+        active-color "#3daee9"
+        inactive-color "#31363b"
+    }
+
+    shadow {
+        on
+        softness 30
+        spread 5
+        offset x=0 y=5
+        color "#00000060"
+    }
+
+    struts {
+        left 0
+        right 0
+        top 0
+        bottom 0
+    }
+}
+
+// Breeze Dark background color for the workspace strip / overview backdrop.
+overview {
+    zoom 0.5
+    backdrop-color "#232629"
+}
+
+// Use the Breeze cursor theme.
+cursor {
+    xcursor-theme "breeze_cursors"
+    xcursor-size 24
+    hide-when-typing
+    hide-after-inactive-ms 1000
+}
+
+// Blur is a niri 26.04 feature; layer-shell surfaces (waybar, fuzzel, mako)
+// can request it themselves, this only tunes the global effect.
+blur {
+    passes 3
+    offset 3.0
+    noise 0.02
+    saturation 1.0
+}
+
+// Clients that support server-side decorations get the Breeze look with
+// correctly drawn focus rings and shadows.
+prefer-no-csd
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+// Start the desktop shell, notifications, portal agent and wallpaper.
+spawn-at-startup "/home/onetap/.local/bin/quickshell"
+spawn-at-startup "mako"
+spawn-at-startup "xsettingsd"
+spawn-at-startup "/usr/lib/x86_64-linux-gnu/libexec/polkit-kde-authentication-agent-1"
+spawn-at-startup "swaybg" "-m" "fill" "-i" "/home/onetap/Pictures/Wallpapers/Dark/dark-forest.jpg"
+
+environment {
+    QT_QPA_PLATFORM "wayland"
+    QT_QPA_PLATFORMTHEME "qt6ct"
+    QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+animations {
+    // Uncomment to disable all animations.
+    // off
+}
+
+// Layer rules: give the Breeze-styled layer surfaces rounded corners and blur.
+layer-rule {
+    match namespace="^(quickshell|fuzzel|mako)$"
+    geometry-corner-radius 8
+}
+
+layer-rule {
+    match namespace="^(fuzzel|mako)$"
+    background-effect {
+        blur true
+        xray true
+    }
+}
+
+// Window rules
+window-rule {
+    // Rounded corners for all windows, in line with Breeze.
+    geometry-corner-radius 8
+    clip-to-geometry true
+}
+
+window-rule {
+    // foot is semitransparent (see alpha in ~/.config/foot/foot.ini), so the
+    // Breeze blur shows through it. draw-border-with-background=false keeps the
+    // border/focus ring from tinting the translucent window.
+    match app-id="^foot$"
+    draw-border-with-background false
+    background-effect {
+        blur true
+        xray true
+    }
+}
+
+window-rule {
+    // Firefox picture-in-picture floats.
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+window-rule {
+    // pavucontrol and similar dialogs float.
+    match app-id=r#"^org\.pulseaudio\.pavucontrol$"#
+    open-floating true
+}
+
+window-rule {
+    match app-id=r#"^nm-connection-editor$"#
+    open-floating true
+}
+
+binds {
+    // ---------------------------------------------------------------------
+    // Hotkeys follow the sway conventions: Mod = Super, Mod+Shift+Q quits,
+    // Mod+Shift+Return opens a terminal, Mod+D the launcher, workspaces on digits.
+    // ---------------------------------------------------------------------
+
+    Mod+Shift+Slash { show-hotkey-overlay; }
+
+    // --- Applications (sway style) ---
+    Mod+Shift+Return hotkey-overlay-title="Terminal: foot" { spawn "foot"; }
+    Mod+D hotkey-overlay-title="Launcher: fuzzel" { spawn "fuzzel"; }
+    Mod+E hotkey-overlay-title="File manager" { spawn "nautilus"; }
+
+    // --- Screenshots (sway/grim style) ---
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+    Mod+Print hotkey-overlay-title="Screenshot region: grim+slurp" { spawn-sh "grim -g \"$(slurp)\" - | wl-copy"; }
+    Mod+Shift+Print hotkey-overlay-title="Screenshot region to file" { spawn-sh "grim -g \"$(slurp)\" ~/Pictures/Screenshots/$(date +%F_%H-%M-%S).png"; }
+
+    // --- Media / hardware keys (sway defaults) ---
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ -l 1.0"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"; }
+    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl stop"; }
+    XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
+    XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%+"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%-"; }
+
+    // --- Window management (sway: Mod+Shift+Q kills, Mod+Shift+E exits) ---
+    Mod+Shift+Q repeat=false { close-window; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+F { maximize-column; }
+    Mod+Shift+Space { toggle-window-floating; }
+    Mod+Space { switch-focus-between-floating-and-tiling; }
+    Mod+Shift+W { toggle-column-tabbed-display; }
+    Mod+O repeat=false { toggle-overview; }
+
+    // Sway moves whole workspaces between outputs with Mod+Shift+bracket.
+    Mod+Shift+BracketLeft  { move-workspace-to-monitor-left; }
+    Mod+Shift+BracketRight { move-workspace-to-monitor-right; }
+
+    // Sway's reload key. niri also live-reloads on save, this forces it.
+    Mod+Shift+C { spawn-sh "niri msg action load-config-file"; }
+
+    // --- Focus (vim keys, like sway) ---
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+    Mod+H     { focus-column-left; }
+    Mod+J     { focus-window-down; }
+    Mod+K     { focus-window-up; }
+    Mod+L     { focus-column-right; }
+
+    // --- Move windows/columns (vim keys) ---
+    Mod+Shift+Left  { move-column-left; }
+    Mod+Shift+Down  { move-window-down; }
+    Mod+Shift+Up    { move-window-up; }
+    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+H     { move-column-left; }
+    Mod+Shift+J     { move-window-down; }
+    Mod+Shift+K     { move-window-up; }
+    Mod+Shift+L     { move-column-right; }
+
+    Mod+Home { focus-column-first; }
+    Mod+End  { focus-column-last; }
+    Mod+Shift+Home { move-column-to-first; }
+    Mod+Shift+End  { move-column-to-last; }
+
+    // --- Multi-monitor ---
+    Mod+Ctrl+Left  { focus-monitor-left; }
+    Mod+Ctrl+Down  { focus-monitor-down; }
+    Mod+Ctrl+Up    { focus-monitor-up; }
+    Mod+Ctrl+Right { focus-monitor-right; }
+    Mod+Ctrl+H     { focus-monitor-left; }
+    Mod+Ctrl+J     { focus-monitor-down; }
+    Mod+Ctrl+K     { focus-monitor-up; }
+    Mod+Ctrl+L     { focus-monitor-right; }
+
+    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+    Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
+
+    // --- Workspaces: sway uses Mod+1..0, niri has dynamic workspaces ---
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+0 { focus-workspace 10; }
+
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+    Mod+Shift+0 { move-column-to-workspace 10; }
+
+    Mod+Page_Down      { focus-workspace-down; }
+    Mod+Page_Up        { focus-workspace-up; }
+    Mod+U              { focus-workspace-down; }
+    Mod+I              { focus-workspace-up; }
+    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
+    Mod+Ctrl+U         { move-column-to-workspace-down; }
+    Mod+Ctrl+I         { move-column-to-workspace-up; }
+    Mod+Shift+Page_Down { move-workspace-down; }
+    Mod+Shift+Page_Up   { move-workspace-up; }
+    Mod+Shift+U         { move-workspace-down; }
+    Mod+Shift+I         { move-workspace-up; }
+
+    // Switch to the previous workspace, like sway's "back_and_forth".
+    Mod+Tab { focus-workspace-previous; }
+
+    // --- Mouse wheel (sway style) ---
+    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+    Mod+WheelScrollRight      { focus-column-right; }
+    Mod+WheelScrollLeft       { focus-column-left; }
+    Mod+Ctrl+WheelScrollRight { move-column-right; }
+    Mod+Ctrl+WheelScrollLeft  { move-column-left; }
+    Mod+Shift+WheelScrollDown      { focus-column-right; }
+    Mod+Shift+WheelScrollUp        { focus-column-left; }
+    Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
+    Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+
+    // --- Column layout (niri specifics, sway-like sizing keys) ---
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+    Mod+Comma  { consume-window-into-column; }
+    Mod+Period { expel-window-from-column; }
+
+    Mod+R { switch-preset-column-width; }
+    Mod+Shift+R { switch-preset-column-width-back; }
+    Mod+Ctrl+R { reset-window-height; }
+    Mod+Ctrl+Shift+R { switch-preset-window-height; }
+
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+
+    Mod+C { center-column; }
+    Mod+Ctrl+C { center-visible-columns; }
+    Mod+Ctrl+F { expand-column-to-available-width; }
+    Mod+M { maximize-window-to-edges; }
+
+    // --- Session ---
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+    Mod+Shift+E hotkey-overlay-title="Quit niri" { quit; }
+    Ctrl+Alt+Delete { quit; }
+    Mod+Shift+P { power-off-monitors; }
+}

@@ -1,0 +1,207 @@
+/* Breeze Dark theme for Waybar */
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Noto Sans", "Font Awesome 6 Free", "Font Awesome", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+}
+
+window#waybar {
+    background-color: rgba(35, 38, 41, 0.92);
+    color: #eff0f1;
+    border: 1px solid rgba(61, 174, 233, 0.25);
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+tooltip {
+    background: #31363b;
+    border: 1px solid #3daee9;
+    border-radius: 6px;
+}
+
+tooltip label {
+    color: #eff0f1;
+    padding: 6px;
+}
+
+/* --- Workspaces ------------------------------------------------------- */
+
+#workspaces {
+    margin: 0 4px;
+}
+
+#workspaces button {
+    padding: 0 7px;
+    margin: 4px 2px;
+    border-radius: 6px;
+    color: #7f8c8d;
+    background: transparent;
+    transition: all 0.15s ease;
+}
+
+#workspaces button:hover {
+    background: rgba(61, 174, 233, 0.18);
+    color: #eff0f1;
+}
+
+#workspaces button.active {
+    color: #232629;
+    background: #3daee9;
+}
+
+#workspaces button.focused {
+    color: #232629;
+    background: #3daee9;
+}
+
+#workspaces button.urgent {
+    background: #da4453;
+    color: #eff0f1;
+}
+
+#workspaces button.empty {
+    color: #4b4e52;
+}
+
+#workspaces button.empty.active {
+    color: #232629;
+}
+
+/* --- Window title ----------------------------------------------------- */
+
+#window {
+    margin: 0 6px;
+    padding: 0 8px;
+    color: #bdc3c7;
+    background: transparent;
+}
+
+window#waybar.empty #window {
+    background: transparent;
+}
+
+/* --- Clock ------------------------------------------------------------ */
+
+#clock {
+    padding: 0 12px;
+    margin: 4px 0;
+    border-radius: 6px;
+    background: rgba(61, 174, 233, 0.14);
+    color: #eff0f1;
+    font-weight: 600;
+}
+
+/* --- Right hand modules ---------------------------------------------- */
+
+#tray,
+#language,
+#bluetooth,
+#network,
+#wireplumber,
+#backlight,
+#battery,
+#cpu,
+#memory,
+#custom-power {
+    padding: 0 8px;
+    margin: 4px 1px;
+    border-radius: 6px;
+    color: #eff0f1;
+    background: transparent;
+}
+
+#tray {
+    padding: 0 6px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: rgba(218, 68, 83, 0.4);
+    border-radius: 4px;
+}
+
+#bluetooth {
+    color: #3daee9;
+}
+
+#bluetooth.disabled,
+#bluetooth.off {
+    color: #7f8c8d;
+}
+
+#bluetooth.connected {
+    color: #3daee9;
+}
+
+#network {
+    color: #eff0f1;
+}
+
+#network.disconnected {
+    color: #da4453;
+}
+
+#wireplumber {
+    color: #eff0f1;
+}
+
+#wireplumber.muted {
+    color: #da4453;
+}
+
+#backlight {
+    color: #eff0f1;
+}
+
+#battery {
+    color: #eff0f1;
+}
+
+#battery.charging,
+#battery.plugged {
+    color: #eff0f1;
+}
+
+#battery.warning:not(.charging) {
+    color: #eff0f1;
+}
+
+#battery.critical:not(.charging) {
+    color: #eff0f1;
+    animation: blink 0.8s linear infinite alternate;
+}
+
+@keyframes blink {
+    to {
+        color: #7f8c8d;
+    }
+}
+
+#cpu {
+    color: #eff0f1;
+}
+
+#memory {
+    color: #eff0f1;
+}
+
+#custom-power {
+    color: #da4453;
+    padding: 0 10px;
+}
+
+#custom-power:hover {
+    background: rgba(218, 68, 83, 0.22);
+}

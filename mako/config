@@ -1,0 +1,50 @@
+# mako — notification daemon, Breeze Dark styling
+# Docs: man 5 mako
+
+font=Noto Sans 10
+background-color=#232629f2
+text-color=#eff0f1
+border-color=#3daee9
+progress-color=over #3daee9ff
+border-size=1
+border-radius=8
+padding=10
+margin=8
+width=360
+height=120
+max-icon-size=48
+icons=1
+icon-path=/usr/share/icons/breeze-dark:/usr/share/icons/hicolor
+
+# Stack notifications from the top right, below the waybar.
+anchor=top-right
+default-timeout=6000
+max-visible=4
+layer=overlay
+
+# Group notifications by application.
+group-by=app-name
+
+# Mouse actions (mako 1.10 defaults, spelled out for clarity).
+on-button-left=invoke-default-action
+on-button-middle=dismiss
+on-button-right=dismiss
+on-touch=dismiss
+
+# Don't let notifications get in the way of fullscreen video/games.
+ignore-timeout=0
+
+[urgency=low]
+background-color=#31363bf2
+border-color=#4b4e52
+default-timeout=4000
+
+[urgency=critical]
+background-color=#da4453f2
+text-color=#eff0f1
+border-color=#da4453
+default-timeout=0
+on-notify=exec sh -c 'paplay /usr/share/sounds/freedesktop/stereo/dialog-error.oga 2>/dev/null || true'
+
+[app-name="Spotify"]
+group-by=app-name

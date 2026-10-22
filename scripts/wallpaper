@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Set a wallpaper from ~/Pictures/Wallpapers/Dark.
+# Usage: wall              -> random dark wallpaper
+#        wall <name|path>  -> specific file (partial name is fine)
+#        wall --list       -> show available wallpapers
+set -euo pipefail
+
+dir="$HOME/Pictures/Wallpapers/Dark"
+
+if [[ "${1:-}" == "--list" || "${1:-}" == "-l" ]]; then
+    find "$dir" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.png' -o -iname '*.jpeg' \) -printf '%f\n' | sort
+    exit 0
+fi
+
+if [[ -n "${1:-}" ]]; then
+    if [[ -f "$1" ]]; then
+        img="$1"
+    elif [[ -f "$dir/$1" ]]; then
+        img="$dir/$1"
+    else
+        img=$(find "$dir" -maxdepth 1 -type f -iname "*$1*" | head -n1)
+        [[ -n "$img" ]] || { echo "Not found: $1" >&2; exit 1; }
+    fi
+else
+    img=$(find "$dir" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.png' -o -iname '*.jpeg' \) | shuf -n1)
+fi
+
+pkill -x swaybg 2>/dev/null || true
+sleep 0.2
+setsid swaybg -m fill -i "$img" >/dev/null 2>&1 &
+echo "Wallpaper: $img"

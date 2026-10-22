@@ -1,0 +1,18 @@
+#!/bin/sh
+# Session menu for niri — Breeze Dark styled fuzzel prompt.
+# Bound to the power button in Waybar and usable from a terminal.
+
+choice=$(printf '%s\n' \
+    "  Logout" \
+    "  Suspend" \
+    "  Reboot" \
+    "  Shutdown" |
+    fuzzel --dmenu --prompt="Session: " --width=22 --lines=4 |
+    sed 's/^[[:space:]]*//')
+
+case "$choice" in
+    Logout)   exec niri msg action quit ;;
+    Suspend)  exec systemctl suspend ;;
+    Reboot)   exec systemctl reboot ;;
+    Shutdown) exec systemctl poweroff ;;
+esac

@@ -1,0 +1,139 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 34,
+  "spacing": 6,
+
+  "modules-left": ["niri/workspaces", "niri/window"],
+  "modules-center": ["clock"],
+  "modules-right": [
+    "tray",
+    "niri/language",
+    "bluetooth",
+    "network",
+    "wireplumber",
+    "backlight",
+    "battery",
+    "cpu",
+    "memory",
+    "custom/power"
+  ],
+
+  "niri/workspaces": {
+    "format": "{icon}",
+    "format-icons": {
+      "active": "\uf111",
+      "default": "\uf10c"
+    }
+  },
+
+  "niri/window": {
+    "format": "{title}",
+    "icon": true,
+    "icon-size": 16,
+    "max-length": 60,
+    "separate-outputs": true
+  },
+
+  "clock": {
+    "format": "{:%H:%M}",
+    "format-alt": "{:%a, %d %b %Y}",
+    "tooltip-format": "<tt>{calendar}</tt>",
+    "calendar": {
+      "mode": "month",
+      "mode-mon-col": 3,
+      "weeks-pos": "right",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#3daee9'><b>{}</b></span>",
+        "days": "<span color='#eff0f1'>{}</span>",
+        "weeks": "<span color='#7f8c8d'>W{}</span>",
+        "today": "<span color='#232629' background='#3daee9'><b>{}</b></span>"
+      }
+    }
+  },
+
+  "niri/language": {
+    "format": "{}",
+    "format-en": "US",
+    "format-ru": "RU"
+  },
+
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8
+  },
+
+  "bluetooth": {
+    "format": "\uf293 {status}",
+    "format-disabled": "\uf293 off",
+    "format-off": "\uf293 off",
+    "format-on": "\uf293 on",
+    "format-connected": "\uf293 {device_alias}",
+    "tooltip-format": "{controller_alias}\t{controller_address}",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "on-click": "blueman-manager"
+  },
+
+  "network": {
+    "format-wifi": "\uf1eb {essid}",
+    "format-ethernet": "\uf0e8 {ifname}",
+    "format-disconnected": "\uf1eb off",
+    "format-linked": "\uf127 {ifname} (no IP)",
+    "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}\n{frequency} GHz",
+    "tooltip-format-ethernet": "{ifname}\n{ipaddr}/{cidr}",
+    "tooltip-format-disconnected": "Disconnected",
+    "on-click": "nm-connection-editor"
+  },
+
+  "wireplumber": {
+    "format": "\uf028 {volume}%",
+    "format-muted": "\uf026 muted",
+    "format-source": "\uf130 {volume}%",
+    "format-source-muted": "\uf131 mic muted",
+    "tooltip": false,
+    "on-click": "pavucontrol",
+    "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ -l 1.0",
+    "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+  },
+
+  "backlight": {
+    "device": "amdgpu_bl0",
+    "format": "\uf185 {percent}%",
+    "tooltip": false,
+    "on-scroll-up": "brightnessctl --class=backlight set 5%+",
+    "on-scroll-down": "brightnessctl --class=backlight set 5%-"
+  },
+
+  "battery": {
+    "states": {
+      "warning": 30,
+      "critical": 15
+    },
+    "format": "{icon} {capacity}%",
+    "format-charging": "\uf0e7 {capacity}%",
+    "format-plugged": "\uf1e6 {capacity}%",
+    "format-full": "\uf240 {capacity}%",
+    "format-icons": ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"],
+    "tooltip-format": "{timeTo}\n{power} W"
+  },
+
+  "cpu": {
+    "format": "\uf2db {usage}%",
+    "interval": 3,
+    "tooltip": false
+  },
+
+  "memory": {
+    "format": "\uf233 {percentage}%",
+    "interval": 5,
+    "tooltip-format": "RAM: {used:0.1f} GiB / {total:0.1f} GiB"
+  },
+
+  "custom/power": {
+    "format": "\uf011",
+    "tooltip": "Session menu",
+    "on-click": "/home/onetap/.local/bin/session-menu"
+  }
+}

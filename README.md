@@ -1,7 +1,8 @@
 # .dotfiles — niri + quickshell, Breeze Dark
 
 Конфигурация рабочего стола: Wayland-композитор **niri**,
-собственная панель на **quickshell**, терминал **foot**, лаунчер **fuzzel**, уведомления **mako** —
+собственная панель на **quickshell**, основной терминал **alacritty** (порт второй — **kitty**),
+лаунчер **fuzzel**, уведомления **mako** —
 всё выдержано в палитре KDE Breeze Dark (`#232629` / `#31363b` / акцент `#3daee9`).
 
 Горячие клавиши — в стиле sway (Mod = Super), раскладки `us,ru` переключаются Caps Lock.
@@ -13,7 +14,9 @@
 ├── install.sh              # установка: симлинки в ~/.config
 ├── niri/                   # конфиг композитора (gaps, blur, скругления, спавн трёх процессов)
 ├── quickshell/             # панель + шторка быстрых настроек (GNOME-style), QML
-├── foot/foot.ini           # терминал: Breeze-цвета, полупрозрачный фон (alpha 0.9)
+├── alacritty/alacritty.toml    # основной терминал: Breeze-цвета, полупрозрачность 0.9
+├── kitty/kitty.conf            # запасной терминал: тот же перенос из foot
+├── foot/foot.ini           # ЛЕГАСИ: старый терминал (Breeze Dark, alpha 0.9)
 ├── fuzzel/fuzzel.ini       # лаунчер: Breeze-палитра, радиус 8, иконки Breeze-Dark
 ├── mako/config             # уведомления: стили urgent/critical, grouped by app-name
 ├── waybar/                 # ЛЕГАСИ: старая панель-прототип (использовалась до quickshell)
@@ -23,6 +26,7 @@
 ├── xsettingsd/xsettingsd.conf  # транслирует тему в X11/GTK-приложения через GDK_BACKEND=x11
 ├── environment.d/90-breeze.conf  # QT_QPA_PLATFORMTHEME=qt6ct для всего пользовательского входа
 ├── cava/                   # аудиовизуализатор в терминале (+ шейдеры)
+├── mpv/                    # плеер: mpv.conf + autoload-скрипт в scripts/
 ├── zsh/zshrc               # oh-my-zsh: agnoster, плагины git/syntax-highlighting/autosuggestions
 ├── scripts/
 │   ├── session-menu        # dmenu-меню сессии (Logout/Suspend/Reboot/Shutdown) через fuzzel
@@ -36,7 +40,9 @@
 |---|---|---|
 | [niri](https://github.com/YaLTeR/niri) | Wayland-композитор, scrollable-tiling | `niri` |
 | [quickshell](https://quickshell.outfoxxed.me) | Панель + шторка QuickMenu/трей/медиа на QML (Qt 6.8+) | бинарник в `~/.local/bin` (см. ниже) |
-| [foot](https://codeberg.org/dnkl/foot) | Wayland-терминал | `foot` |
+| [alacritty](https://github.com/alacritty/alacritty) | Основной Wayland-терминал (Breeze-цвета, opacity 0.9) | `alacritty` |
+| [kitty](https://sw.kovidgoyal.net/kitty/) | Запасной терминал (тот же Breeze Dark) | `kitty` |
+| [foot](https://codeberg.org/dnkl/foot) | Легаси-терминал (до alacritty) | `foot` |
 | [fuzzel](https://codeberg.org/dnkl/fuzzel) | Лаунчер приложений + dmenu | `fuzzel` |
 | [mako](https://github.com/emersion/mako) | Демон уведомлений | `mako-notifier` |
 | Waybar | Старая панель (легаси, не запускается по умолчанию) | нет в системе |
@@ -45,6 +51,7 @@
 | [qt6ct](https://github.com/trialuser02/qt6ct) | Тема Qt: Breeze, палитра BreezeDark, шрифты | `qt6ct` |
 | Breeze | GTK-тема, иконки, курсоры | `breeze-gtk-theme` `breeze-icon-theme` `breeze-cursor-theme` `breeze` |
 | [cava](https://github.com/karlstav/cava) | Аудиовизуализатор в терминале | `cava` |
+| [mpv](https://mpv.io) | Видеоплеер (конфиг + autoload-скрипт) | `mpv` |
 | zsh + oh-my-zsh | Оболочка: тема agnoster | `zsh`, клоны в `oh-my-zsh/custom/plugins` |
 | zsh-autosuggestions / zsh-syntax-highlighting | Подсказки/подсветка команд | клоны в `~/.oh-my-zsh/custom/plugins` |
 | [grim](https://github.com/emersion/grim) + [slurp](https://github.com/emersion/slurp) | Скриншоты области | `grim` `slurp` |
@@ -73,7 +80,7 @@
 ## Установка
 
 ```bash
-git clone https://github.com/<user>/.dotfiles.git ~/.dotfiles
+git clone https://github.com/OneTapFN/niri-new.git ~/.dotfiles
 cd ~/.dotfiles
 ./install.sh
 ```

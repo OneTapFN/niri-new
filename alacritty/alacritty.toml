@@ -1,0 +1,65 @@
+# alacritty — Breeze Dark, перенесено з ~/.config/foot/foot.ini
+# Docs: https://alacritty.org/config-alacritty.html
+
+[window]
+# padding=10x10 у foot
+padding = { x = 10, y = 10 }
+# alpha=0.9 у foot; niri розмиватиме те, що під напівпрозорістю,
+# див. background-effect у ~/.config/niri/config.kdl
+opacity = 0.9
+
+[scrolling]
+# scrollback lines=10000
+history = 10000
+
+[cursor]
+# style=beam, blink=yes у foot
+style.shape = "Beam"
+style.blinking = "On"
+
+[mouse]
+# hide-when-typing=no
+hide_when_typing = false
+
+# selection-target=both у foot — виділення одразу потрапляє
+# і в primary selection, і в clipboard
+[selection]
+save_to_clipboard = true
+
+[font]
+# font=Noto Sans Mono:size=11
+size = 16.0
+[font.normal]
+family = "Noto Sans Mono"
+style = "Regular"
+
+# Кольори: Breeze Dark / KDE Konsole "Breeze"
+[colors.primary]
+foreground = "#eff0f1"
+background = "#232629"
+
+# regular0-7 → normal
+[colors.normal]
+black   = "#232629"
+red     = "#da4453"
+green   = "#27ae60"
+yellow  = "#fdbc4b"
+blue    = "#3daee9"
+magenta = "#9b59b6"
+cyan    = "#1abc9c"
+white   = "#eff0f1"
+
+# bright0-7 → bright
+[colors.bright]
+black   = "#7f8c8d"
+red     = "#da4453"
+green   = "#27ae60"
+yellow  = "#fdbc4b"
+blue    = "#3daee9"
+magenta = "#9b59b6"
+cyan    = "#1abc9c"
+white   = "#eff0f1"
+
+[colors.selection]
+text      = "#eff0f1"
+background = "#3daee9"

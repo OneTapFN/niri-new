@@ -28,7 +28,7 @@ link() {
 echo "Установка из: $DOT_DIR"
 
 # Каталоги конфигов — симлинками целиком
-for app in niri quickshell foot fuzzel mako waybar qt6ct xsettingsd cava gtk-4.0 environment.d; do
+for app in niri quickshell alacritty kitty foot fuzzel mako waybar qt6ct xsettingsd cava mpv gtk-4.0 environment.d; do
 	if [[ -d "$DOT_DIR/$app" ]]; then
 		link "$DOT_DIR/$app" "$CONFIG_DIR/$app"
 	fi

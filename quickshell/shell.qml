@@ -10,10 +10,20 @@ ShellRoot {
 		quickMenu: menu
 		mediaMenu: media
 		trayMenu: tray
+		weatherMenu: weatherMenu
+		calendarMenu: calendarMenu
 	}
 
 	QuickMenu {
 		id: menu
+	}
+
+	WeatherMenu {
+		id: weatherMenu
+	}
+
+	CalendarMenu {
+		id: calendarMenu
 	}
 
 	MediaMenu {

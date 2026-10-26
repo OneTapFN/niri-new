@@ -155,7 +155,7 @@ window-rule {
     // ~/.config/alacritty/alacritty.toml), so the
     // Breeze blur shows through it. draw-border-with-background=false keeps the
     // border/focus ring from tinting the translucent window.
-    match app-id="^alacritty$"
+    match app-id="^(?i)alacritty$"
     draw-border-with-background false
     background-effect {
         blur true

@@ -15,8 +15,12 @@ PanelWindow {
 	property var quickMenu: null
 	// Set by shell.qml, shows context menus for system tray items.
 	property var trayMenu: null
-	// Set by shell.qml, media dropdown opened from the center of the bar.
+	// Set by shell.qml, the media dropdown opened from the center of the bar.
 	property var mediaMenu: null
+	// Set by shell.qml, the weather dropdown opened from the weather pill.
+	property var weatherMenu: null
+	// Set by shell.qml, the calendar dropdown opened from the clock pill.
+	property var calendarMenu: null
 
 	anchors {
 		top: true
@@ -65,6 +69,8 @@ PanelWindow {
 	function toggleMenu() {
 		if (bar.mediaMenu)
 			bar.mediaMenu.visible = false;
+		if (bar.calendarMenu)
+			bar.calendarMenu.visible = false;
 		if (bar.quickMenu)
 			bar.quickMenu.toggle();
 	}
@@ -72,8 +78,34 @@ PanelWindow {
 	function toggleMediaMenu() {
 		if (bar.quickMenu)
 			bar.quickMenu.visible = false;
+		if (bar.calendarMenu)
+			bar.calendarMenu.visible = false;
+		if (bar.weatherMenu)
+			bar.weatherMenu.visible = false;
 		if (bar.mediaMenu)
 			bar.mediaMenu.toggle();
+	}
+
+	function toggleWeatherMenu() {
+		if (bar.quickMenu)
+			bar.quickMenu.visible = false;
+		if (bar.mediaMenu)
+			bar.mediaMenu.visible = false;
+		if (bar.calendarMenu)
+			bar.calendarMenu.visible = false;
+		if (bar.weatherMenu)
+			bar.weatherMenu.toggle();
+	}
+
+	function toggleCalendarMenu() {
+		if (bar.quickMenu)
+			bar.quickMenu.visible = false;
+		if (bar.mediaMenu)
+			bar.mediaMenu.visible = false;
+		if (bar.weatherMenu)
+			bar.weatherMenu.visible = false;
+		if (bar.calendarMenu)
+			bar.calendarMenu.toggle();
 	}
 
 	function openTrayMenu(item, visual) {
@@ -133,8 +165,11 @@ PanelWindow {
 		spacing: 8
 
 		MediaPill {
-			visible: NowPlaying.hasPlayer && NowPlaying.title !== ""
+			visible: (NowPlaying.hasPlayer && NowPlaying.title !== "") || MusicSpectrum.forceRun
 		}
+
+		// Weather in Pavlovsky Posad, sits between the media pill and the clock.
+		WeatherPill { }
 
 		Rectangle {
 			id: clockPill
@@ -156,7 +191,7 @@ PanelWindow {
 			MouseArea {
 				anchors.fill: parent
 				cursorShape: Qt.PointingHandCursor
-				onClicked: bar.toggleMenu()
+				onClicked: bar.toggleCalendarMenu()
 			}
 		}
 	}
@@ -299,17 +334,6 @@ PanelWindow {
 				}
 			}
 		}
-
-		Item {
-			width: 2
-			height: 1
-		}
-
-		StatusButton {
-			glyph: Theme.icoPower
-			danger: true
-			onClicked: bar.toggleMenu()
-		}
 	}
 
 	SystemClock {
@@ -387,6 +411,18 @@ PanelWindow {
 					font.pixelSize: 9
 				}
 			}
+
+			// Four-band music visualiser, cava style, right of the titles.
+			Item {
+				width: 18
+				height: 20
+				anchors.verticalCenter: parent.verticalCenter
+
+				SpectrumBar { x: 0; level: MusicSpectrum.levels[0] }
+				SpectrumBar { x: 5; level: MusicSpectrum.levels[1] }
+				SpectrumBar { x: 10; level: MusicSpectrum.levels[2] }
+				SpectrumBar { x: 15; level: MusicSpectrum.levels[3] }
+			}
 		}
 
 		MouseArea {
@@ -395,6 +431,81 @@ PanelWindow {
 			hoverEnabled: true
 			cursorShape: Qt.PointingHandCursor
 			onClicked: bar.toggleMediaMenu()
+		}
+	}
+
+	// Four-band music visualiser component (three pixels per bar).
+	component SpectrumBar: Rectangle {
+		id: bar
+
+		property real level: 0
+
+		width: 3
+		anchors.bottom: parent.bottom
+		height: 3 + Math.min(1, Math.max(0, bar.level)) * 15
+		radius: 1.5
+		color: Theme.accent
+		opacity: NowPlaying.playing ? 0.95 : 0.3
+	}
+
+	// Weather pill: FA glyph, temperature and a short condition description.
+	// Click forces an immediate refresh.
+	component WeatherPill: Rectangle {
+		id: weatherPill
+
+		width: weatherContent.implicitWidth + 14
+		height: 28
+		radius: 6
+		color: weatherArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : Qt.rgba(1, 1, 1, 0.06)
+
+		Row {
+			id: weatherContent
+			anchors.centerIn: parent
+			spacing: 7
+
+			Text {
+				anchors.verticalCenter: parent.verticalCenter
+				text: Weather.glyph
+				color: Theme.accent
+				font.family: Theme.iconFamily
+				font.pixelSize: 13
+			}
+
+			Column {
+				id: weatherText
+				width: Math.min(110, Math.max(weatherTemp.implicitWidth, weatherSubtitle.implicitWidth))
+				anchors.verticalCenter: parent.verticalCenter
+				spacing: 0
+
+				Text {
+					id: weatherTemp
+					width: parent.width
+					text: Weather.tempText
+					color: Theme.text
+					font.family: Theme.fontFamily
+					font.pixelSize: 11
+					font.weight: Font.DemiBold
+				}
+
+				Text {
+					id: weatherSubtitle
+					width: parent.width
+					visible: text !== ""
+					text: Weather.subtitle
+					elide: Text.ElideRight
+					color: Theme.textDim
+					font.family: Theme.fontFamily
+					font.pixelSize: 9
+				}
+			}
+		}
+
+		MouseArea {
+			id: weatherArea
+			anchors.fill: parent
+			hoverEnabled: true
+			cursorShape: Qt.PointingHandCursor
+			onClicked: bar.toggleWeatherMenu()
 		}
 	}
 
